@@ -33,19 +33,14 @@ public class Part1 {
        extends Mapper<Object, Text, Text, ArrayWritable>{
    Log log = LogFactory.getLog(TokenizerMapper.class);
     private Text sample = new Text();
-    //private MapWritable genePair = new MapWritable();
-    //private FloatWritable geneVal = new FloatWritable();
-    //private IntWritable count = new IntWritable(0);
-    private ArrayList<Float> exprVals;
-    private ArrayList<String> maxVals;
+    private ArrayList<Float> exprVals; //list of all the expr values per sample
+    private ArrayList<String> maxVals; //list of the max expr vals
     private TextArrayWritable results;
     private float max;
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
       StringTokenizer itr = new StringTokenizer(value.toString(),",");
       sample.set(itr.nextToken()); //set key as first value in string as sample
-      //count.set(0);
-      //for each token add a tuple <gene#,exprVal>
       exprVals = new ArrayList<Float>();
       maxVals = new ArrayList<String>();
       results = new TextArrayWritable();
@@ -60,15 +55,18 @@ public class Part1 {
       		max = exprVals.get(i);
       	}
       }
+      //add max values to a list
       for(int j = 0; j<exprVals.size(); j++){
       	if(Math.abs(max -(exprVals.get(j))) < 0.00001){
       		maxVals.add("gene_"+Integer.toString(j+1));
       	}
       }
+      //add the max values to the result 
       results = new TextArrayWritable(maxVals.toArray(new String[maxVals.size()]));
       context.write(sample,results);
     }
   }
+  //implement the TextArrayWritable
   public static class TextArrayWritable extends ArrayWritable{
   	public TextArrayWritable(){
   		super(Text.class);
@@ -81,24 +79,12 @@ public class Part1 {
   		}
   		set(texts);
   	}
-  	 /*@Override
-    public Text[] get() {
-        return (Text[]) super.get();
-    }*/
 
     @Override
-	public String toString() {
-		/*Text[] strings = (Text[])get();
-		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i<strings.length; i++){
-			sb.append(strings[i].toString());
-			if(i != strings.length-1){
-				sb.append(",");
-			}
-		}*/
-	  String line = Arrays.toString(get());
-	  return line.substring(1,line.length()-1);
-	}
+  	public String toString() {
+  	  String line = Arrays.toString(get());
+  	  return line.substring(1,line.length()-1);
+  	}
   }
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
@@ -111,8 +97,6 @@ public class Part1 {
     Job job = new Job(conf, "part1 max gene vals");
     job.setJarByClass(Part1.class);
     job.setMapperClass(TokenizerMapper.class);
-    //job.setCombinerClass(IntSumReducer.class);
-    //job.setReducerClass(IntSumReducer.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(TextArrayWritable.class);
     FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
