@@ -24,10 +24,8 @@ public class part2pig extends EvalFunc<DataBag>
 				genesEntry = Double.parseDouble(((Tuple)i.next()).get(0).toString());
 				Tuple t = tf.newTuple();
 				t.append("gene_" + genesNum);
-				if (genesEntry > 0.5)
-					t.append(1);
-				else if (genesEntry <= 0.5)
-					t.append(0);
+				if (genesEntry > 0)
+					t.append(genesEntry);
 				res.add(t);
 			}
 			return res;
