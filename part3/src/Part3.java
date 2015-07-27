@@ -101,9 +101,7 @@ public class Part3 extends Configured implements Tool{
               context.write(samplePair,product);
             }
           }
-          //base+=geneSamples.get(i);
         }
-        //context.write(key,new Text(base));
     }
   }
   public static class SecondMapper extends Mapper<Object, Text, Text, Text>{
@@ -132,53 +130,6 @@ public class Part3 extends Configured implements Tool{
         context.write(key,total);
     }
   }
-  /*public static void main(String[] args) throws Exception {
-    final String OUTPUT_PATH = "intermediate_output";
-    Configuration conf = new Configuration();
-    conf.set("mapreduce.output.textoutputformat.separator",",");
-    String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
-    if (otherArgs.length != 2) {
-      System.err.println("Usage: wordcount <in> <out>");
-      System.exit(2);
-    }
-    Job job = new Job(conf, "part3 matrix");
-    job.setJarByClass(Part3.class);
-    job.setMapperClass(GeneMapper.class);
-    //job.setCombinerClass(MultCombiner.class);
-    job.setReducerClass(MultCombiner.class);
-    job.setMapOutputKeyClass(Text.class);
-    job.setMapOutputValueClass(Text.class);
-    job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(Text.class);
-    //job.setInputFormatClass(FileInputFormat.class);
-  //job.setOutputFormatClass(TextOutputFormat.class);
-    // Configuration reduceConf = new Configuration(false);
-    // ChainMapper.addMapper(job,GeneMapper.class,Object.class,
-    //   Text.class,Text.class,Text.class,reduceConf);
-    // Configuration mapBConf = new Configuration(false);
-    // ChainMapper.addMapper(job,MultMapper.class,Text.class,
-    //   Text.class,Text.class,Text.class,mapBConf);
-    FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
-    TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
-    job.waitForCompletion(true);
-
-    Configuration conf2 = new Configuration();
-    conf.set("mapreduce.output.textoutputformat.separator",",");
-    Job job2 = new Job(conf2, "Job 2");
-    job2.setJarByClass(Part3.class);
-    job2.setMapperClass(SecondMapper.class);
-    job2.setReducerClass(MultReducer.class);
-    job.setMapOutputKeyClass(Text.class);
-    job.setMapOutputValueClass(Text.class);
-    job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(FloatWritable.class);
-    //job.setInputFormatClass(TextInputFormat.class);
-  //job.setOutputFormatClass(FileOutputFormat.class);
-
-  TextInputFormat.addInputPath(job2, new Path(OUTPUT_PATH));
-  FileOutputFormat.setOutputPath(job2, new Path(args[1]));
-    System.exit(job2.waitForCompletion(true) ? 0 : 1);
-  }*/
 
 
 
